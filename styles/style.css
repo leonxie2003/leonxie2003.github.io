@@ -1,0 +1,37 @@
+html {
+    font-family: "Roboto";
+    background-color: #F47B47
+}
+
+body {
+    width: 600px;
+    background-color: #9c2814;
+    padding: 0 20px 20px 20px;
+    margin: 0 auto;
+    border: 5px solid black;
+}
+
+h1 {
+    margin: 0;
+    font-size: 60px;
+    padding: 20px 0;
+    color: #F47B47;
+    text-shadow: 3px 3px 1px black;
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+}
+
+p,
+li {
+    font-size: 16px;
+    line-height: 1;
+    letter-spacing: 1px;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+}
