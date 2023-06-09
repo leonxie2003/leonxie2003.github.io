@@ -24,7 +24,7 @@ function setUserName() {
 }
 
 if (!localStorage.getItem("name")) {
-    setUserName();
+    hdng.textContent = `Welcome, Guest.`
 } else {
     const name = localStorage.getItem("name")
     hdng.textContent = `Welcome, ${name}.`
