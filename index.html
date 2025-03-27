@@ -5,24 +5,157 @@
     <meta name="viewport" content="width=device-width" />
     <link href="styles/style.css" rel="stylesheet" />
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Roboto">
-    <title>Crab Optimality</title>
+    href="https://fonts.googleapis.com/css?family=Roboto">
+    <title>15-418 Final Project</title>
   </head>
   <body>
-    <h1>Carcinization</h1>
-    <h2></h2>
-    <img src="images/crab.png" alt="a crab on a rock" width="300"/>
-    <p><strong>Carcinization</strong> is a phenomenon whereby ocean crustaceans gradually evolve
-        to become more crab-like. Some examples include:</p>
-        <ul>
-            <li>King crabs</li>
-            <li>Porcelain crabs</li>
-            <li>Hermit crabs</li>
-        </ul>
-    <p>For more information, check out <a href="https://en.wikipedia.org/wiki/Carcinisation">this</a> Wikipedia page!</p>
+    <h1>Speeding Up Multiple Sequence Alignment Using Speculative
+    Parallelism</h1>
 
-    <button>Change user</button>
+    <h2>Taekseung Kim, Leon Xie</h2>
+    <h2>SUMMARY</h2>
+    <p>
+      We plan to implement a speculative-parallel version of the Berger-Munson
+      algorithm for multiple sequence alignment, which has important
+      implications for computational biology. We will then benchmark our
+      algorithm for performance on several types of hardware.
+    </p>
 
-    <script src="scripts/main.js"></script>
+    <h2>BACKGROUND</h2>
+    <p>
+      Sequence alignment is an important problem for computational biology.
+      Given two biological sequences (usually amino acid or nucleic acid
+      sequences), we wish to identify similarities (e.g. identical subsequences)
+      to analyze their biological similarity. One approach is to use alignment,
+      inserting gaps into both sequences at certain points. We then wish to find
+      the best alignment, using some scoring criteria.
+    </p>
+
+    <img src="images/alignment.png" width="200"/>
+
+    <p>
+      In the above image, each letter represents an amino acid. Image taken from
+      Yap, Frieder, and Martino (1998).
+    </p>
+
+    <p>
+      We are also interested in multiple sequence alignments, where we align
+      more than two sequences. Aligning multiple sequences is much more
+      difficult, since the computation time quickly increases with each sequence
+      added. So, heuristics are used in practice.
+    </p>
+
+    <p>
+      One way to align multiple sequences is to use a randomized, iterative
+      approach. We initialize some alignment, and iteratively try to improve the
+      current alignment, using some randomization at each timestep. In
+      particular, we focus on the Berger-Munson algorithm, which achieves good
+      alignment scores, but has a bad runtime. 
+    </p>
+
+    <p>
+      Although Berger-Munson has some inherent sequential steps, we attempt to
+      parallelize the execution using speculative computation.
+    </p>
+
+    <h2>THE CHALLENGE</h2>
+    <p>
+      This problem is challenging because Berger-Munson is inherently
+      sequential, with each timestep depending on the previous timestep’s
+      results. 
+    </p>
+
+    <p>
+      To get around this, we plan to use speculative computation. In each
+      iteration of Berger-Munson, the new alignment is either accepted (score is
+      better than current maximum) or rejected (score is worse than current
+      maximum). The key observation is that each timestep only depends on the
+      alignment of the most recently accepted iteration. Any rejected iterations
+      are discarded.
+    </p>
+
+    <p>
+      Therefore, we can speculate, using our additional processors, the result
+      after a chain of rejections. P0 does no speculation. P1 speculates that P0
+      will reject. P2 speculates that P0 and P1 will reject, and so on. Each
+      processor uses the result from the previous timestep to compute the next
+      alignment. For instance, if P0 and P1 both reject, we can directly use
+      P2’s result for the next timestep.
+    </p>
+
+    <img src="images/speculative.png" width="600"/>
+
+    <p>
+      In the above illustration from Yap, Frieder, and Martino (1998), we have a
+      total of 28 iterations of Berger-Munson, which have been completed in 13
+      parallel timesteps (using 4 processors). Bolded numbers represent
+      iterations that have been used in the final sequence of iterations. In
+      parallel step 6, we see that P0’s result rejects, so we immediately use
+      P1’s result for the next timestep. Similarly, in parallel step 9, we see
+      that P0 and P1 both reject, so we immediately use P2’s result for the next
+      timestep. 
+    </p>
+
+    <p>
+      An additional challenge in mapping the workload to processors is that if
+      we have a long chain of accepts, we will have low utilization, since many
+      parallel results will be discarded (unbolded numbers in the above image).
+      Thankfully, we expect many rejections as the alignment score improves.
+    </p>
+
+    <h2>RESOURCES</h2>
+    <p>
+      Our main reference is <a
+      href="https://ir.cs.georgetown.edu/downloads/bio_seq.pdf">Yap, Frieder,
+      and Martino (1998). Parallel Computation in Biological Sequence
+      Analysis.</a> Especially we are focusing on section 4, where we describe
+      multiple sequence alignment based on parallel speculative algorithms. 
+    </p>
+
+    <p>
+      <a href="https://pubmed.ncbi.nlm.nih.gov/1747779/">Berger and Munson
+      (1991). A novel randomized iterative strategy for aligning multiple
+      protein sequences</a>
+    </p>
+
+    <p>
+      Some github code that I found: 
+      <a href="https://github.com/TimoLassmann/kalign"> link 1</a>,
+      <a href="https://github.com/refresh-bio/FAMSA"> link 2</a>.
+    </p>
+
+    <h2>GOALS AND DELIVERABLES</h2>
+
+    <p>
+      We want to first implement a sequential version of Berger-Munson
+      algorithm. And apply that to large sequence dataset to see the baselines.
+      Then, we plan to implement a parallel speculative algorithm that is
+      discussed in the paper. (PLAN TO ACHIEVE)
+    </p>
+
+    <p>
+      After this, we would try to minimize the calculation cost, maybe changing
+      the ordering or preprocessing/prefetching the data. Also we plan to add
+      different type of alignment/datasets to generate concrete datasets, or add
+      different alignment algorithm(HOPE TO ACHIEVE)  
+    </p>
+
+    <h2>PLATFORM CHOICE</h2>
+
+    <p>
+      We plan to use GHC machine / PSC machines. We may also experiment with
+      GPUs, if time allows. Original paper was using Intel iPSC/860, which is
+      using 128 cores, 
+    </p>
+
+    <h2>SCHEDULE</h2>
+
+    <ul>
+      <li>Week 1: Understand Berger-Munson and set up baseline sequential implementation(or use the existing code and understand this). Also have to configure datasets on GHC machine/ PSC machines. </li>
+      <li>Week 2: Implement speculative parallel version.</li>
+      <li>Week 3: Run performance benchmarks and do performance debugging.</li>
+      <li>Week 4: Analyze speedup and write report. Work on poster.</li>
+    </ul>
+
   </body>
 </html>

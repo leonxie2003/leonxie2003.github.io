@@ -1,11 +1,11 @@
 html {
     font-family: "Roboto";
-    background-color: #F47B47
+    background-color: #5bb0f6
 }
 
 body {
     width: 600px;
-    background-color: #9c2814;
+    background-color: #ffffff;
     padding: 0 20px 20px 20px;
     margin: 0 auto;
     border: 5px solid black;
@@ -15,8 +15,8 @@ h1 {
     margin: 0;
     font-size: 60px;
     padding: 20px 0;
-    color: #F47B47;
-    text-shadow: 3px 3px 1px black;
+    color: #000000;
+    /* text-shadow: 3px 3px 1px black; */
     text-align: center;
 }
 
