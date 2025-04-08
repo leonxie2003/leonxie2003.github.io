@@ -145,7 +145,11 @@
     <p>
       We plan to use GHC machine / PSC machines. We may also experiment with
       GPUs, if time allows. Original paper was using Intel iPSC/860, which is
-      using 128 cores, 
+      using 128 cores.
+
+      To implement our parallelism, we could use either a fork-join model 
+      (OpenMP), or a message-passing model (OpenMPI). This algorithm may be
+      better implemented with fork-join.
     </p>
 
     <h2>SCHEDULE</h2>
