@@ -147,19 +147,56 @@
       GPUs, if time allows. Original paper was using Intel iPSC/860, which is
       using 128 cores.
 
-      To implement our parallelism, we could use either a fork-join model 
+      To implement our parallelism, we could use either a fork-join model
       (OpenMP), or a message-passing model (OpenMPI). This algorithm may be
       better implemented with fork-join.
     </p>
 
     <h2>SCHEDULE</h2>
 
+    <h3>COMPLETED</h3>
     <ul>
-      <li>Week 1: Understand Berger-Munson and set up baseline sequential implementation(or use the existing code and understand this). Also have to configure datasets on GHC machine/ PSC machines. </li>
-      <li>Week 2: Implement speculative parallel version.</li>
-      <li>Week 3: Run performance benchmarks and do performance debugging.</li>
-      <li>Week 4: Analyze speedup and write report. Work on poster.</li>
+      <li>Week 1 & 2: Understand speculative Berger-Munson, read alignment
+      papers, begin sequential implementation, research alignment libraries</li>
     </ul>
+
+    <h3>TODO</h3>
+    <ul>
+      <li>Week 3 first half: Figure out MSA library code (Taekseung); Begin
+      implementing sequential Berger-Munson (pair programming) </li>
+      <li>Week 3 second half:Finish implementing sequential Berger-Munson (pair
+      programming); Sketch parallel code (pseudocode, libraries, etc.) (Leon);
+      Begin implementing parallel Berger-Munson (pair programming) </li>
+      <li>Week 4 first half: Finish Implementing parallel Berger-Munson (Leon) </li>
+      <li>Week 4 second half: Run experiments and collect data (Taekseung);
+      Write report (Leon & Taekseung); Make poster (Leon & Taekseung) </li>
+    </ul>
+
+    <h2> WORK SO FAR (4/15) </h2>
+
+    <p>
+      We began by closely reading and analyzing our reference paper, which is a
+      speculative parallel version of Berger-Munson multiple sequence alignment.
+      We paid especially close attention to the speculative-parallel pseudocode
+      provided, along with its explanation. After doing some additional
+      research, we decided on a message-passing programming model. Then,
+      realizing that this paper was missing details on the sequence alignment
+      algorithm portion, we referred to additional research papers. These
+      included the original Berger-Munson paper, as well as more fundamental
+      computational biology papers (Needleman-Wunsch, etc.).
+    </p>
+
+    <p>
+      We then attempted to begin our sequential code implementation. We set up a
+      Git repository, and created some hello-world files. Then, we realized we
+      needed code that would take as input two alignment profiles, and produce
+      an alignment between the two profiles, while preserving the alignment
+      within profiles. We considered writing our own version of this, but
+      decided that a library is better. We did research on several sequence
+      alignment libraries (including FAMSA, seq-align, and others), but some had
+      only one-to-one alignment, or were deprecated. We finally found ClustalW,
+      and are currently working to integrate it with our codebase.
+    </p>
 
   </body>
 </html>
